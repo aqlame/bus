@@ -1,0 +1,28 @@
+{
+  "name": "bus",
+  "main": "bus.js",
+  "version": "0.0.0",
+  "homepage": "https://github.com/aqlame/bus",
+  "authors": [
+    "Ahmed AbdelHamid <ahmed@aqla.me>"
+  ],
+  "description": "A light weight javascript messaging engine. It is used by (http://aqla.me Aqlame) extensively.",
+  "keywords": [
+    "bus",
+    "messaging",
+    "engine",
+    "events"
+  ],
+  "license": "LGPL",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "examples"
+  ],
+  "dependencies": {
+    "underscore": "~1.7.0"
+  }
+}

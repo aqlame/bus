@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Basic bus usage</title>
+
+    <script src="../bower_components/underscore/underscore.js"></script>
+    <script src="../bus.js"></script>
+</head>
+<body>
+<h1>Basic bus usage</h1>
+Received messages: <br>
+<ul id="messages"></ul>
+<script>
+    <!--
+    var receiver1=bus.register('mymessage1', function (id, message) {
+        var link = document.createElement('li');
+        link.appendChild(document.createTextNode('mymessage 1:' + message));
+        document.getElementById("messages").appendChild(link)
+    });
+    var receiver2=bus.register('mymessage2', function (id, message) {
+        var link = document.createElement('li');
+        link.appendChild(document.createTextNode('mymessage 2:' + message));
+        document.getElementById("messages").appendChild(link)
+    });
+    bus.send('mymessage1', 'message 1');
+    bus.send('mymessage1', 'message 2');
+    bus.send('mymessage2', 'message A');
+    bus.send('mymessage2', 'message B');
+
+    bus.unRegister(receiver1);
+    _.defer(function(){ // unRegister action is deferred
+        bus.send('mymessage1', 'message 3');    // No one will catch this message
+        bus.send('mymessage1', 'message 4');    // No one will catch this message
+        bus.send('mymessage2', 'message C');
+        bus.send('mymessage2', 'message D');
+
+        bus.unRegister(receiver2);
+        _.defer(function(){ // unRegister action is deferred
+            bus.send('mymessage1', 'message 5');    // No one will catch this message
+            bus.send('mymessage1', 'message 6');    // No one will catch this message
+            bus.send('mymessage2', 'message E');    // No one will catch this message
+            bus.send('mymessage2', 'message F');    // No one will catch this message
+        });
+    });
+    //-->
+</script>
+</body>
+</html>
