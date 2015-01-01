@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Hierarchy of Buses</title>
+
+    <script src="../bower_components/underscore/underscore.js"></script>
+    <script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="../bus.js"></script>
+
+    <style>
+        .cube{
+            border: solid 5px black;
+            width: 50px;
+            height: 50px;
+        }
+    </style>
+</head>
+<body>
+
+<script>
+<!--
+    function createBox(text, base, context){
+        var box=$('<div class="cube">'+text+'</div>').insertBefore(base);
+        var subBus=context.get('bus').createSub();
+        var subContext=context.createSub('box');
+        subContext.set('bus', subBus);
+
+        function destroyBox(){
+            subBus.send('destroy');
+            box.remove();
+        }
+
+        return box;
+    }
+    var base=$('body');
+    var baseContext=bus.createContext();
+    var next=base;
+
+    baseContext.set('bus', bus);
+    for(var i=0; i<4; i++){
+        next=createBox(i, next, baseContext);
+    }
+//-->
+</script>
+</body>
+</html>

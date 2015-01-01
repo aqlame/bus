@@ -41,6 +41,17 @@
                 }
                 return undefined;
             },
+            change: function (name, value) {
+                if (this.data.hasOwnProperty(name))
+                    return (this.data[name]=value);
+                var parent = this.parent;
+                while (parent) {
+                    if (parent.data.hasOwnProperty(name))
+                        return (parent.data[name]=value);
+                    parent = parent.parent;
+                }
+                return undefined;
+            },
             add: function (bus, evId) {
                 if (arguments.length == 1)
                     this.list.push([bus]);
