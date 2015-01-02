@@ -75,7 +75,9 @@
                 });
                 this.children.forEach(function (i) {
                     i.release();
-                    i.parent=undefined;
+                    _.defer(function(){
+                        i.parent=undefined;
+                    });
                 });
                 this.list = [];
                 this.children = [];

@@ -19,16 +19,16 @@ Subscribers can be added to a context to be unregistered at once: <br>
     console.log('context1.var='+context1.get('var'));
 
     context1.onChange('var', function(id, val){
-        console.log('New value of context1.var-1='+val);
+        console.log('New value of context1.var='+val);
     });
 
     context1.set('var', 'my value a version 2');
 
     var context2=context1.createSub();
 
-    console.log('context2.var-1='+context2.get('var'));
+    console.log('context2.var='+context2.get('var'));
     context2.onChange('var', function(id, val){
-        console.log('New value of context2.var-1='+val);
+        console.log('New value of context2.var='+val);
     });
 
     // This will set context1.var
