@@ -16,24 +16,28 @@
  */
 
 (function (def) {
-    defer=typeof defer === 'function'?defer: _.defer;
+    var defer=typeof defer === 'function'?defer: _.defer;
     def('bus', [], function () {
         var evContext = function () {
             this.list = [];
+            this.children=[];
             this.data = {};
         };
         evContext.prototype = {
             set: function (name, value) {
-                if (this.events && this.data[name] != value)
-                    this.events.send(name + '/changed', value, 'evContext.set');
+                propagateChangeEvent=function(p){
+                    if (p.events)
+                        p.events.send(name + '/changed', value, 'evContext.set');
+                    p.children.forEach(propagateChangeEvent);
+                }
+                if(this.data[name]!=value)
+                    propagateChangeEvent(this);
                 this.data[name] = value;
             },
             get: function (name) {
                 if (name == 'context')
                     return this;
-                if (this.data.hasOwnProperty(name))
-                    return this.data[name];
-                var parent = this.parent;
+                var parent = this;
                 while (parent) {
                     if (parent.data.hasOwnProperty(name))
                         return parent.data[name];
@@ -42,15 +46,13 @@
                 return undefined;
             },
             change: function (name, value) {
-                if (this.data.hasOwnProperty(name))
-                    return (this.data[name]=value);
-                var parent = this.parent;
+                var parent = this;
                 while (parent) {
                     if (parent.data.hasOwnProperty(name))
-                        return (parent.data[name]=value);
+                        return parent.set(name, value);
                     parent = parent.parent;
                 }
-                return undefined;
+                this.set(name, value);  // final resort
             },
             add: function (bus, evId) {
                 if (arguments.length == 1)
@@ -61,7 +63,7 @@
             createSub: function () {
                 var sub = new evContext();
                 sub.parent = this;
-                this.list.push([sub]);
+                this.children.push(sub);
                 return sub;
             },
             release: function () {
@@ -69,19 +71,25 @@
                     if (i.length == 2 && i[0].unRegister)
                         i[0].unRegister(i[1]);
                     else if (i[0].release)
-                        i[0].release();		// For sub contexts
+                        i[0].release();
+                });
+                this.children.forEach(function (i) {
+                    i.release();
+                    i.parent=undefined;
                 });
                 this.list = [];
+                this.children = [];
+                if(this.events)this.events.clear();
             },
-            onChange: function (path, cb, context) {
+            onChange: function (name, cb, context) {
                 if (!this.events)this.events = new busData();
-                return this.events.register(path + '/changed', cb, context);
+                return this.events.register(name + '/changed', cb, context);
             },
-            onLoad: function (path, cb, context) {
+            onLoad: function (name, cb, context) {
                 cb();
                 return null;
             },
-            isLoaded: function (path) {
+            isLoaded: function (name) {
                 return true;
             }
         };

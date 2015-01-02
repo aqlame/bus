@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Subscribers contexts</title>
+
+    <script src="../bower_components/underscore/underscore.js"></script>
+    <script src="../bus.js"></script>
+</head>
+<body>
+<h1>Subscribers contexts</h1>
+Subscribers can be added to a context to be unregistered at once: <br>
+<ul id="messages"></ul>
+<script>
+    <!--
+    var context1=bus.createContext();
+
+    context1.set('var', 'my value a');
+    console.log('context1.var='+context1.get('var'));
+
+    context1.onChange('var', function(id, val){
+        console.log('New value of context1.var-1='+val);
+    });
+
+    context1.set('var', 'my value a version 2');
+
+    var context2=context1.createSub();
+
+    console.log('context2.var-1='+context2.get('var'));
+    context2.onChange('var', function(id, val){
+        console.log('New value of context2.var-1='+val);
+    });
+
+    // This will set context1.var
+    context2.change('var', 'my value a version 3');
+
+    // This will set context2.var, context1.var will maintain the same old value
+    context2.set('var', 'my value a version 4');
+
+
+    context2.add({release: function(){
+        console.log('Context 2 was released');
+    }});
+
+    _.defer(function(){
+        context1.release();
+
+        // All events were deleted, so no one will get change event
+        context1.change('var', 'my value a version 5');
+    });
+    //-->
+</script>
+</body>
+</html>
