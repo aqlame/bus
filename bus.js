@@ -25,13 +25,15 @@
         };
         evContext.prototype = {
             set: function (name, value) {
-                propagateChangeEvent=function(p){
+                propagateChangeEvent=function(p, check){
+                    if(!check && p.hasOwnProperty(name))return; // stop propagation when the same property is found
+
                     if (p.events)
                         p.events.send(name + '/changed', value, 'evContext.set');
                     p.children.forEach(propagateChangeEvent);
                 }
                 if(this.data[name]!=value)
-                    propagateChangeEvent(this);
+                    propagateChangeEvent(this, true);
                 this.data[name] = value;
             },
             get: function (name) {
@@ -67,21 +69,21 @@
                 return sub;
             },
             release: function () {
-                this.list.forEach(function (i) {
+                var self=this;
+                //defer(function(){
+                self.list.forEach(function (i) {
                     if (i.length == 2 && i[0].unRegister)
                         i[0].unRegister(i[1]);
                     else if (i[0].release)
                         i[0].release();
                 });
-                this.children.forEach(function (i) {
+                self.children.forEach(function (i) {
                     i.release();
-                    _.defer(function(){
-                        i.parent=undefined;
-                    });
                 });
-                this.list = [];
-                this.children = [];
-                if(this.events)this.events.clear();
+                self.list = [];
+                self.children = [];
+                if(self.events)self.events.clear();
+                //});
             },
             onChange: function (name, cb, context) {
                 if (!this.events)this.events = new busData();
@@ -93,7 +95,11 @@
             },
             isLoaded: function (name) {
                 return true;
+            },
+            unRegister: function(handleId){
+                if (this.events)this.events.unRegister(handleId);
             }
+
         };
 
         var stack = [];
@@ -133,6 +139,13 @@
 
                 return sub;
             },
+            once: function(subject, cb, evContext) {
+                var self=this;
+                this.register(subject, function(id, message, subject, source){
+                    self.unRegister(id);
+                    cb.call(self, message, subject, source);
+                }, evContext);
+            },
             register: function (subject, cb, evContext) {
                 var id = _.uniqueId('bus');
                 //console.log('Bus register for ['+subject+']');
@@ -153,7 +166,7 @@
                 if (!registerId)
                     return;
                 var self = this;
-                _.defer(function () {
+                defer(function () {
                     _.each(self.registry, function (regs) {
                         for (var i = 0; i < regs.length; i++) {
                             if (regs[i].id == registerId) {
@@ -194,7 +207,7 @@
     });
 }(
     // wrapper to run code everywhere
-        typeof define === 'function' && define.amd ?
+    typeof define === 'function' && define.amd ?
         //AMD
         function (name, deps, factory) {
             define(deps, factory); //registering as an unnamed module, more flexible and match CommonJS
